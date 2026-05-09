@@ -1,0 +1,10 @@
+data/
+workspace/
+.env
+.env.*
+!.env.docker.example
+__pycache__/
+.pytest_cache/
+.venv/
+venv/
+node_modules/
