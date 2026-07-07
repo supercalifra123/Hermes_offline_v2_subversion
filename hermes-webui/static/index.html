@@ -178,8 +178,16 @@
           <button class="panel-head-btn has-tooltip has-tooltip--bottom" onclick="openSkillCreate()" data-tooltip="New skill" data-i18n-title="new_skill" aria-label="New skill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
         </div>
       </div>
-      <div class="skills-search sidebar-search"><svg class="sidebar-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input id="skillsSearch" placeholder="Search skills..." data-i18n-placeholder="search_skills" oninput="filterSkills()"></div>
-      <div class="skills-list" id="skillsList"><div style="padding:12px;color:var(--muted);font-size:12px" data-i18n="loading">Loading...</div></div>
+      <div class="skills-nav" id="skillsNav">
+        <button class="skills-nav-btn active" id="btnInstalledSkills" onclick="switchSkillView('installed')">
+          <svg class="skills-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          <span>已安装skill</span>
+        </button>
+        <button class="skills-nav-btn" id="btnMarketSkills" onclick="switchSkillView('market')">
+          <svg class="skills-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span>skill广场</span>
+        </button>
+      </div>
     </div>
     <!-- Memory panel -->
     <div class="panel-view" id="panelMemory">
@@ -656,6 +664,39 @@
           <button id="btnSaveSkillDetail" class="panel-head-btn primary has-tooltip has-tooltip--bottom" data-tooltip="Save" data-i18n-title="save" onclick="saveSkillForm()" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></button>
         </div>
       </div>
+      <!-- Installed skills card view -->
+      <div class="main-view-body" id="skillCardsView">
+        <div class="skills-toolbar">
+          <div class="skills-search-main">
+            <svg class="skills-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input id="skillsSearchMain" placeholder="Search skills..." data-i18n-placeholder="search_skills" oninput="filterSkillsCards()">
+          </div>
+          <button class="panel-head-btn has-tooltip has-tooltip--bottom" onclick="openSkillCreate()" data-tooltip="New skill" data-i18n-title="new_skill" aria-label="New skill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        </div>
+        <div class="skills-card-grid" id="skillsCardGrid"></div>
+        <div class="skills-pagination" id="skillsPagination"></div>
+      </div>
+      <!-- Market skills card view -->
+      <div class="main-view-body" id="skillMarketView" style="display:none">
+        <div class="skills-market-toolbar">
+          <div class="skills-market-categories" id="skillsMarketCategories">
+            <button class="skills-cat-btn active" data-cat="all">全部</button>
+            <button class="skills-cat-btn" data-cat="featured">精选</button>
+            <button class="skills-cat-btn" data-cat="contentCreation">内容创作</button>
+            <button class="skills-cat-btn" data-cat="devops">DevOps</button>
+            <button class="skills-cat-btn" data-cat="research">研究</button>
+            <button class="skills-cat-btn" data-cat="automation">自动化</button>
+            <button class="skills-cat-btn" data-cat="data">数据分析</button>
+          </div>
+          <div class="skills-market-search">
+            <svg class="skills-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input id="skillsMarketSearch" placeholder="搜索skill..." data-i18n-placeholder="search_skills">
+          </div>
+        </div>
+        <div class="skills-card-grid" id="skillsMarketGrid"><div style="padding:24px;color:var(--muted);font-size:13px;text-align:center" data-i18n="loading">Loading...</div></div>
+        <div class="skills-pagination" id="skillsMarketPagination"></div>
+      </div>
+      <!-- Skill detail view -->
       <div class="main-view-body" id="skillDetailBody" style="display:none"></div>
       <div class="main-view-empty" id="skillDetailEmpty">
         <svg class="main-view-empty-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>

@@ -2750,7 +2750,8 @@ def _serve_shell_unavailable(handler, exc: Exception) -> bool:
     return True
 
 
-_MARKET_API_BASE = "https://m1.apifoxmock.com/m1/8523244-8297808-default"
+# _MARKET_API_BASE = "https://m1.apifoxmock.com/m1/8523244-8297808-default"
+_MARKET_API_BASE = "https://m1.apifoxmock.com/m1/8523244-8297808-8128193"
 
 
 def _proxy_market_api(handler, parsed, method: str, body: bytes | None = None) -> bool:

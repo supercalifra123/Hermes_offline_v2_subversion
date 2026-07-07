@@ -2405,24 +2405,26 @@ async function clearConversation() {
 
 // ── Skills panel ──
 async function loadSkills() {
-  if (_skillsData) { renderSkills(_skillsData); return; }
-  const box = $('skillsList');
+  if (_skillsData) { renderInstalledSkills(_skillsData, _installedPageNum); return; }
   try {
     const data = await api('/api/skills');
     _skillsData = data.skills || [];
-    // Prune collapsed state to only keep categories present in fresh data,
-    // avoiding stale keys when categories are renamed or removed server-side.
     const liveCats = new Set(_skillsData.map(s => s.category || '(general)'));
     for (const c of _collapsedCats) { if (!liveCats.has(c)) _collapsedCats.delete(c); }
-    renderSkills(_skillsData);
-    fetch('/market-api/api')
-      .then(res => res.json())
-      .then(data => console.log('[market-api] response:', data))
-      .catch(err => console.warn('[market-api] fetch failed:', err));
-  } catch(e) { box.innerHTML = `<div style="padding:12px;color:var(--accent);font-size:12px">Error: ${esc(e.message)}</div>`; }
+    if (_skillViewMode === 'installed') renderInstalledSkills(_skillsData, _installedPageNum);
+  } catch(e) {
+    const grid = $('skillsCardGrid');
+    if (grid) grid.innerHTML = `<div style="padding:24px;color:var(--accent);font-size:13px;text-align:center">Error: ${esc(e.message)}</div>`;
+  }
 }
 
 let _collapsedCats = new Set(); // persisted collapsed state across re-renders
+let _skillViewMode = 'installed'; // 'installed' | 'market'
+let _marketSkillsData = null;     // cached market API response
+let _marketPageNum = 1;
+let _marketPageSize = 16;
+let _installedPageNum = 1;
+let _installedPageSize = 16;
 
 function _toggleCatCollapse(cat) {
   if (_collapsedCats.has(cat)) _collapsedCats.delete(cat);
@@ -2440,46 +2442,298 @@ function _toggleCatCollapse(cat) {
 }
 
 function renderSkills(skills) {
-  const query = ($('skillsSearch').value || '').toLowerCase();
+  // Backward-compat: redirect to card-based rendering
+  renderInstalledSkills(skills, _installedPageNum);
+}
+
+function filterSkills() {
+  if (_skillsData) renderInstalledSkills(_skillsData, 1);
+}
+
+function filterSkillsCards() {
+  _installedPageNum = 1;
+  if (_skillsData) renderInstalledSkills(_skillsData, 1);
+}
+
+// ── Skill card rendering ──
+
+function _skillCategoryIcon(category) {
+  const map = {
+    'featured': 'star',
+    'contentCreation': 'pencil',
+    'devops': 'terminal',
+    'research': 'globe',
+    'automation': 'zap',
+    'data': 'clipboard-list',
+    'general': 'layers',
+    'communication': 'message-square',
+    'media': 'image',
+    'utility': 'wrench',
+  };
+  const iconName = map[category] || 'layers';
+  if (typeof li === 'function') return li(iconName, 22);
+  return `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>`;
+}
+
+function _categoryLabel(cat) {
+  const labels = {
+    'featured': '精选',
+    'contentCreation': '内容创作',
+    'devops': 'DevOps',
+    'research': '研究',
+    'automation': '自动化',
+    'data': '数据分析',
+    'general': '通用',
+    'communication': '通信',
+    'media': '媒体',
+    'utility': '工具',
+  };
+  return labels[cat] || cat || '通用';
+}
+
+function renderSkillCard(skill, source) {
+  // Normalize fields from different sources
+  const isMarket = source === 'market';
+  const name = isMarket ? (skill.displayName || '') : (skill.name || '');
+  const desc = isMarket ? (skill.summary || '') : (skill.description || '');
+  const category = isMarket ? (skill.skillLabel || 'general') : (skill.category || 'general');
+  const needApiKey = isMarket ? (skill.needApiKey === true) : false;
+  const skillId = isMarket ? (skill.id || '') : '';
+
+  const iconSvg = _skillCategoryIcon(category);
+  const catLabel = _categoryLabel(category);
+
+  let tagsHtml = `<span class="skill-tag skill-tag-category">${esc(catLabel)}</span>`;
+  if (isMarket) {
+    if (needApiKey) {
+      tagsHtml += `<span class="skill-tag skill-tag-apikey">需要API Key</span>`;
+    } else {
+      tagsHtml += `<span class="skill-tag skill-tag-noapikey">无需API Key</span>`;
+    }
+  }
+
+  const clickHandler = isMarket
+    ? `onclick="openMarketSkillDetail('${esc(name)}', ${skillId})"`
+    : `onclick="openSkill('${esc(name)}', this)"`;
+
+  return `
+    <div class="skill-card" ${clickHandler}>
+      <div class="skill-card-header">
+        <div class="skill-card-icon">${iconSvg}</div>
+        <div class="skill-card-info">
+          <div class="skill-card-name" title="${esc(name)}">${esc(name)}</div>
+          <div class="skill-card-tags">${tagsHtml}</div>
+        </div>
+      </div>
+      <div class="skill-card-desc">${esc(desc)}</div>
+    </div>`;
+}
+
+function renderInstalledSkills(skills, page) {
+  const grid = $('skillsCardGrid');
+  const pagination = $('skillsPagination');
+  if (!grid) return;
+
+  const query = ($('skillsSearchMain') && $('skillsSearchMain').value || '').toLowerCase();
   const filtered = query ? skills.filter(s =>
     (s.name||'').toLowerCase().includes(query) ||
     (s.description||'').toLowerCase().includes(query) ||
     (s.category||'').toLowerCase().includes(query)
   ) : skills;
-  // Group by category
-  const cats = {};
-  for (const s of filtered) {
-    const cat = s.category || '(general)';
-    if (!cats[cat]) cats[cat] = [];
-    cats[cat].push(s);
+
+  if (!filtered.length) {
+    grid.innerHTML = `<div style="padding:24px;color:var(--muted);font-size:13px;text-align:center">${esc(t('skills_no_match'))}</div>`;
+    if (pagination) pagination.innerHTML = '';
+    return;
   }
-  const box = $('skillsList');
-  box.innerHTML = '';
-  if (!filtered.length) { box.innerHTML = `<div style="padding:12px;color:var(--muted);font-size:12px">${esc(t('skills_no_match'))}</div>`; return; }
-  for (const [cat, items] of Object.entries(cats).sort()) {
-    const collapsed = _collapsedCats.has(cat);
-    const sec = document.createElement('div');
-    sec.className = 'skills-category' + (collapsed ? ' collapsed' : '');
-    const hdr = document.createElement('div');
-    hdr.className = 'skills-cat-header';
-    hdr.dataset.cat = cat;
-    hdr.innerHTML = `<span class="cat-chevron" style="display:inline-flex;transition:transform .15s;${collapsed ? '' : 'transform:rotate(90deg)'}">${li('chevron-right',12)}</span> ${esc(cat)} <span style="opacity:.5">(${items.length})</span>`;
-    hdr.onclick = () => _toggleCatCollapse(cat);
-    sec.appendChild(hdr);
-    for (const skill of items.sort((a,b) => a.name.localeCompare(b.name))) {
-      const el = document.createElement('div');
-      el.className = 'skill-item';
-      el.style.display = collapsed ? 'none' : '';
-      el.innerHTML = `<span class="skill-name">${esc(skill.name)}</span><span class="skill-desc">${esc(skill.description||'')}</span>`;
-      el.onclick = () => openSkill(skill.name, el);
-      sec.appendChild(el);
-    }
-    box.appendChild(sec);
+
+  const pageSize = _installedPageSize;
+  const totalPages = Math.ceil(filtered.length / pageSize);
+  const safePage = Math.max(1, Math.min(page || 1, totalPages));
+  _installedPageNum = safePage;
+
+  const start = (safePage - 1) * pageSize;
+  const pageItems = filtered.slice(start, start + pageSize);
+
+  grid.innerHTML = pageItems.map(s => renderSkillCard(s, 'installed')).join('');
+
+  if (pagination) {
+    _renderPagination(pagination, safePage, filtered.length, pageSize, function(newPage) {
+      renderInstalledSkills(skills, newPage);
+    });
   }
 }
 
-function filterSkills() {
-  if (_skillsData) renderSkills(_skillsData);
+// ── Market skills ──
+
+async function loadMarketSkills(pageNum) {
+  const grid = $('skillsMarketGrid');
+  if (!grid) return;
+  grid.innerHTML = `<div style="padding:24px;color:var(--muted);font-size:13px;text-align:center" data-i18n="loading">Loading...</div>`;
+  try {
+    const res = await fetch('/market-api/skills-mock?pageNum=' + (pageNum || 1) + '&pageSize=' + _marketPageSize);
+    const data = await res.json();
+    _marketSkillsData = data;
+    _marketPageNum = pageNum || 1;
+    renderMarketSkills(data, _marketPageNum);
+  } catch(e) {
+    grid.innerHTML = `<div style="padding:24px;color:var(--accent);font-size:13px;text-align:center">加载失败: ${esc(e.message)}</div>`;
+    const pagination = $('skillsMarketPagination');
+    if (pagination) pagination.innerHTML = '';
+  }
+}
+
+function renderMarketSkills(data, pageNum) {
+  const grid = $('skillsMarketGrid');
+  const pagination = $('skillsMarketPagination');
+  if (!grid) return;
+
+  const rows = data.rows || [];
+  const total = data.total || rows.length;
+
+  if (!rows.length) {
+    grid.innerHTML = `<div style="padding:24px;color:var(--muted);font-size:13px;text-align:center">暂无skill</div>`;
+    if (pagination) pagination.innerHTML = '';
+    return;
+  }
+
+  grid.innerHTML = rows.map(s => renderSkillCard(s, 'market')).join('');
+
+  if (pagination) {
+    _renderPagination(pagination, pageNum || 1, total, _marketPageSize, function(newPage) {
+      _marketPageNum = newPage;
+      loadMarketSkills(newPage);
+    });
+  }
+}
+
+function openMarketSkillDetail(name, skillId) {
+  // For now, market skills are view-only. Show the name in the detail view
+  // with a note that this is a marketplace skill.
+  const title = $('skillDetailTitle');
+  const body = $('skillDetailBody');
+  const empty = $('skillDetailEmpty');
+  const cardsView = $('skillCardsView');
+  const marketView = $('skillMarketView');
+
+  if (cardsView) cardsView.style.display = 'none';
+  if (marketView) marketView.style.display = 'none';
+  if (title) title.textContent = name;
+
+  // Show basic info for market skill
+  const skill = _marketSkillsData && _marketSkillsData.rows
+    ? _marketSkillsData.rows.find(s => s.id === skillId)
+    : null;
+  const desc = skill ? (skill.summary || '') : '';
+  const version = skill && skill.publishedVersion ? skill.publishedVersion.version : '';
+  const catLabel = skill ? _categoryLabel(skill.skillLabel || 'general') : '';
+
+  let html = `<div class="main-view-content skill-detail-content">`;
+  html += `<div style="margin-bottom:16px">`;
+  if (catLabel) html += `<span class="skill-tag skill-tag-category" style="margin-right:8px">${esc(catLabel)}</span>`;
+  if (version) html += `<span style="font-size:11px;color:var(--muted)">版本: ${esc(version)}</span>`;
+  html += `</div>`;
+  html += `<p style="font-size:13px;color:var(--muted);line-height:1.6">${esc(desc) || '暂无描述'}</p>`;
+  html += `<p style="margin-top:16px;font-size:11px;color:var(--muted);opacity:.7">此skill来自skill广场，可在广场中查看更多信息。</p>`;
+  html += `</div>`;
+
+  if (body) {
+    body.innerHTML = html;
+    body.style.display = '';
+  }
+  if (empty) empty.style.display = 'none';
+  _skillMode = 'read';
+  _setSkillHeaderButtons('empty');
+}
+
+function switchSkillView(view) {
+  _skillViewMode = view;
+  const installedBtn = $('btnInstalledSkills');
+  const marketBtn = $('btnMarketSkills');
+  const cardsView = $('skillCardsView');
+  const marketView = $('skillMarketView');
+  const detailBody = $('skillDetailBody');
+  const detailEmpty = $('skillDetailEmpty');
+  const detailTitle = $('skillDetailTitle');
+
+  // Toggle nav buttons
+  if (installedBtn) installedBtn.classList.toggle('active', view === 'installed');
+  if (marketBtn) marketBtn.classList.toggle('active', view === 'market');
+
+  // Hide detail views
+  if (detailBody) { detailBody.innerHTML = ''; detailBody.style.display = 'none'; }
+  if (detailEmpty) detailEmpty.style.display = 'none';
+  if (detailTitle) detailTitle.textContent = '';
+  _setSkillHeaderButtons('empty');
+  _skillMode = 'empty';
+  _currentSkillDetail = null;
+
+  // Show the correct card view
+  if (view === 'installed') {
+    if (cardsView) cardsView.style.display = '';
+    if (marketView) marketView.style.display = 'none';
+    if (_skillsData) {
+      renderInstalledSkills(_skillsData, _installedPageNum);
+    } else {
+      loadSkills();
+    }
+  } else if (view === 'market') {
+    if (cardsView) cardsView.style.display = 'none';
+    if (marketView) marketView.style.display = '';
+    if (!_marketSkillsData) {
+      loadMarketSkills(1);
+    } else {
+      renderMarketSkills(_marketSkillsData, _marketPageNum);
+    }
+  }
+}
+
+// ── Pagination helper ──
+
+function _renderPagination(container, currentPage, totalItems, pageSize, onPageChange) {
+  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+  if (totalPages <= 1) { container.innerHTML = ''; return; }
+
+  let html = '';
+  html += `<button class="skills-page-btn" ${currentPage <= 1 ? 'disabled' : ''} onclick="void(0)" data-page="${currentPage - 1}">‹</button>`;
+
+  const maxButtons = 7;
+  let startPage, endPage;
+  if (totalPages <= maxButtons) {
+    startPage = 1;
+    endPage = totalPages;
+  } else {
+    const half = Math.floor(maxButtons / 2);
+    if (currentPage <= half + 1) {
+      startPage = 1;
+      endPage = maxButtons;
+    } else if (currentPage >= totalPages - half) {
+      startPage = totalPages - maxButtons + 1;
+      endPage = totalPages;
+    } else {
+      startPage = currentPage - half;
+      endPage = currentPage + half;
+    }
+  }
+
+  for (let i = startPage; i <= endPage; i++) {
+    html += `<button class="skills-page-btn${i === currentPage ? ' active' : ''}" data-page="${i}">${i}</button>`;
+  }
+
+  html += `<button class="skills-page-btn" ${currentPage >= totalPages ? 'disabled' : ''} data-page="${currentPage + 1}">›</button>`;
+  html += `<span class="skills-page-info">共 ${totalItems} 个</span>`;
+
+  container.innerHTML = html;
+
+  // Attach click handlers
+  container.querySelectorAll('.skills-page-btn:not([disabled])').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const p = parseInt(this.dataset.page);
+      if (p && p !== currentPage && typeof onPageChange === 'function') {
+        onPageChange(p);
+      }
+    });
+  });
 }
 
 // Currently selected skill detail — kept across panel switches so re-entering
@@ -2502,6 +2756,11 @@ function _renderSkillDetail(name, content, linkedFiles) {
   const empty = $('skillDetailEmpty');
   const editBtn = $('btnEditSkillDetail');
   const delBtn = $('btnDeleteSkillDetail');
+  // Hide card views
+  const cardsView = $('skillCardsView');
+  const marketView = $('skillMarketView');
+  if (cardsView) cardsView.style.display = 'none';
+  if (marketView) marketView.style.display = 'none';
   if (title) title.textContent = name;
   const { frontmatter, body: markdownBody } = _stripYamlFrontmatter(content);
   let html = '';
@@ -2617,6 +2876,11 @@ function _renderSkillForm({ name, category, content, isEdit }) {
   const title = $('skillDetailTitle');
   const body = $('skillDetailBody');
   const empty = $('skillDetailEmpty');
+  // Hide card views
+  const cardsView = $('skillCardsView');
+  const marketView = $('skillMarketView');
+  if (cardsView) cardsView.style.display = 'none';
+  if (marketView) marketView.style.display = 'none';
   if (!body || !title) return;
   title.textContent = isEdit ? t('skills_edit') + ' · ' + name : t('new_skill');
   const nameDisabled = isEdit ? 'disabled' : '';
@@ -2656,7 +2920,7 @@ function cancelSkillForm() {
     _renderSkillDetail(snap.name, snap.content || '', snap.linked_files || {});
     return;
   }
-  // Revert to empty state
+  // Revert to card view
   _skillPreFormDetail = null;
   _currentSkillDetail = null;
   _skillMode = 'empty';
@@ -2664,9 +2928,17 @@ function cancelSkillForm() {
   const empty = $('skillDetailEmpty');
   const title = $('skillDetailTitle');
   if (body) { body.innerHTML = ''; body.style.display = 'none'; }
-  if (empty) empty.style.display = '';
+  if (empty) empty.style.display = 'none';
   if (title) title.textContent = '';
   _setSkillHeaderButtons('empty');
+  // Restore the appropriate card view
+  if (_skillViewMode === 'installed') {
+    const cardsView = $('skillCardsView');
+    if (cardsView) cardsView.style.display = '';
+  } else if (_skillViewMode === 'market') {
+    const marketView = $('skillMarketView');
+    if (marketView) marketView.style.display = '';
+  }
 }
 
 async function saveSkillForm() {
@@ -2730,10 +3002,15 @@ async function deleteCurrentSkill() {
     const empty = $('skillDetailEmpty');
     const title = $('skillDetailTitle');
     if (body) { body.innerHTML = ''; body.style.display = 'none'; }
-    if (empty) empty.style.display = '';
+    if (empty) empty.style.display = 'none';
     if (title) title.textContent = '';
     _setSkillHeaderButtons('empty');
     await loadSkills();
+    // Restore card view
+    if (_skillViewMode === 'installed') {
+      const cardsView = $('skillCardsView');
+      if (cardsView) cardsView.style.display = '';
+    }
     showToast(t('skill_deleted') || 'Skill deleted');
   } catch(e) { setStatus(t('error_prefix') + e.message); }
 }
