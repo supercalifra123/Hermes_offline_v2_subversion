@@ -1255,6 +1255,17 @@
     </div>
   </div>
 </div>
+<div class="skill-detail-overlay" id="skillDetailOverlay" style="display:none" aria-hidden="true" onclick="if(event.target===this)closeSkillDetailModal()">
+  <div class="skill-detail-modal" id="skillDetailModal" role="dialog" aria-modal="true">
+    <button class="skill-detail-close" onclick="closeSkillDetailModal()" aria-label="Close">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="skill-detail-body">
+      <div class="skill-detail-main" id="skillDetailMain"></div>
+      <div class="skill-detail-sidebar" id="skillDetailSidebar"></div>
+    </div>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
 <script src="static/i18n.js?v=__WEBUI_VERSION__" defer></script>
 <script src="static/icons.js?v=__WEBUI_VERSION__" defer></script>

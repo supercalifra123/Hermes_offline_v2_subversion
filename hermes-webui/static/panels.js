@@ -2608,42 +2608,145 @@ function renderMarketSkills(data, pageNum) {
 }
 
 function openMarketSkillDetail(name, skillId) {
-  // For now, market skills are view-only. Show the name in the detail view
-  // with a note that this is a marketplace skill.
-  const title = $('skillDetailTitle');
-  const body = $('skillDetailBody');
-  const empty = $('skillDetailEmpty');
-  const cardsView = $('skillCardsView');
-  const marketView = $('skillMarketView');
-
-  if (cardsView) cardsView.style.display = 'none';
-  if (marketView) marketView.style.display = 'none';
-  if (title) title.textContent = name;
-
-  // Show basic info for market skill
   const skill = _marketSkillsData && _marketSkillsData.rows
     ? _marketSkillsData.rows.find(s => s.id === skillId)
     : null;
-  const desc = skill ? (skill.summary || '') : '';
-  const version = skill && skill.publishedVersion ? skill.publishedVersion.version : '';
-  const catLabel = skill ? _categoryLabel(skill.skillLabel || 'general') : '';
+  if (!skill) return;
 
-  let html = `<div class="main-view-content skill-detail-content">`;
-  html += `<div style="margin-bottom:16px">`;
-  if (catLabel) html += `<span class="skill-tag skill-tag-category" style="margin-right:8px">${esc(catLabel)}</span>`;
-  if (version) html += `<span style="font-size:11px;color:var(--muted)">版本: ${esc(version)}</span>`;
-  html += `</div>`;
-  html += `<p style="font-size:13px;color:var(--muted);line-height:1.6">${esc(desc) || '暂无描述'}</p>`;
-  html += `<p style="margin-top:16px;font-size:11px;color:var(--muted);opacity:.7">此skill来自skill广场，可在广场中查看更多信息。</p>`;
-  html += `</div>`;
+  const displayName = skill.displayName || name;
+  const desc = skill.summary || '';
+  const version = skill.publishedVersion ? skill.publishedVersion.version : '';
+  const updatedAt = skill.updatedAt || '';
+  const visibility = skill.visibility || '';
+  const status = skill.status || '';
+  const category = skill.skillLabel || 'general';
+  const needApiKey = skill.needApiKey === true;
+  const iconSvg = _skillCategoryIcon(category);
+  const catLabel = _categoryLabel(category);
 
-  if (body) {
-    body.innerHTML = html;
-    body.style.display = '';
+  // Build main content
+  const main = $('skillDetailMain');
+  if (main) {
+    const formatDate = (d) => { try { const dt = new Date(d); return dt.toLocaleDateString('zh-CN', {year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}); } catch(e) { return d; } };
+
+    main.innerHTML = `
+      <div class="skill-detail-icon">${iconSvg}</div>
+      <div class="skill-detail-name">${esc(displayName)}</div>
+      <div class="skill-detail-status-row">
+        <span class="skill-tag skill-tag-category">${esc(catLabel)}</span>
+        ${visibility ? `<span class="skill-detail-status public">${esc(visibility)}</span>` : ''}
+        ${status ? `<span class="skill-detail-status active">${esc(status)}</span>` : ''}
+        ${needApiKey ? '<span class="skill-tag skill-tag-apikey">需要API Key</span>' : '<span class="skill-tag skill-tag-noapikey">无需API Key</span>'}
+      </div>
+      ${desc ? `<p class="skill-detail-desc">${esc(desc)}</p>` : ''}
+      <div class="skill-detail-meta-row">
+        ${version ? `<span class="skill-detail-meta-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>版本 ${esc(version)}</span>` : ''}
+        ${updatedAt ? `<span class="skill-detail-meta-item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${esc(formatDate(updatedAt))}</span>` : ''}
+      </div>
+      <div class="skill-detail-tabs">
+        <button class="skill-detail-tab-btn active" onclick="switchSkillDetailTab('overview', this)">概览</button>
+        <button class="skill-detail-tab-btn" onclick="switchSkillDetailTab('files', this)">文件</button>
+        <button class="skill-detail-tab-btn" onclick="switchSkillDetailTab('versions', this)">版本</button>
+      </div>
+      <div class="skill-detail-tab-panel active" id="skillTabOverview">
+        <table class="skill-meta-table">
+          <tbody>
+            <tr><th>名称</th><td>${esc(displayName)}</td></tr>
+            <tr><th>描述</th><td>${esc(desc || '—')}</td></tr>
+            <tr><th>版本</th><td>${esc(version || '—')}</td></tr>
+            <tr><th>类别</th><td>${esc(catLabel)}</td></tr>
+            <tr><th>可见性</th><td>${esc(visibility || '—')}</td></tr>
+            <tr><th>状态</th><td>${esc(status || '—')}</td></tr>
+            <tr><th>需要API Key</th><td>${needApiKey ? '是' : '否'}</td></tr>
+            <tr><th>下载次数</th><td>${skill.downloadCount != null ? skill.downloadCount : '—'}</td></tr>
+            <tr><th>评分</th><td>${skill.ratingAvg != null ? skill.ratingAvg + ' (' + (skill.ratingCount||0) + ' 评价)' : '—'}</td></tr>
+          </tbody>
+        </table>
+        <div class="skill-overview-title">${esc(displayName)} 技能</div>
+        <div class="skill-overview-text">${esc(desc || '暂无描述。')}</div>
+        <ul class="skill-overview-features">
+          <li>调用 ${esc(displayName)} 相关 API 接口</li>
+          <li>下载并保存结果数据与图片</li>
+          <li>生成可视化图表与报告</li>
+          <li>批量处理与自动化工作流</li>
+        </ul>
+      </div>
+      <div class="skill-detail-tab-panel" id="skillTabFiles">
+        <div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:10px;opacity:.4"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+          <div>暂无文件</div>
+          <div style="font-size:10px;margin-top:4px;opacity:.6">此功能正在开发中</div>
+        </div>
+      </div>
+      <div class="skill-detail-tab-panel" id="skillTabVersions">
+        <table class="skill-meta-table">
+          <tbody>
+            <tr><th>当前版本</th><td>${esc(version || '—')}</td></tr>
+            <tr><th>发布日期</th><td>${esc(updatedAt ? formatDate(updatedAt) : '—')}</td></tr>
+            <tr><th>状态</th><td>${skill.publishedVersion && skill.publishedVersion.status ? esc(skill.publishedVersion.status) : '—'}</td></tr>
+          </tbody>
+        </table>
+      </div>`;
   }
-  if (empty) empty.style.display = 'none';
-  _skillMode = 'read';
-  _setSkillHeaderButtons('empty');
+
+  // Build sidebar
+  const sidebar = $('skillDetailSidebar');
+  if (sidebar) {
+    sidebar.innerHTML = `
+      <div class="skill-sidebar-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/></svg>
+        安装指引
+      </div>
+      <div class="skill-install-section">
+        <h4>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+          Agent 自动安装
+        </h4>
+        <div class="skill-install-notice">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>功能开发中，敬请期待</span>
+        </div>
+      </div>
+      <div class="skill-install-section">
+        <h4>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          手动安装
+        </h4>
+        <div class="skill-install-text">下载 Skill 包后，解压到 Hermes 的 skills 目录中，重启服务即可使用。</div>
+        <a class="skill-download-btn" href="#" onclick="event.preventDefault();showToast('下载功能开发中，敬请期待')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          下载 Skill
+        </a>
+      </div>`;
+  }
+
+  // Show the overlay
+  const overlay = $('skillDetailOverlay');
+  if (overlay) { overlay.style.display = ''; overlay.setAttribute('aria-hidden', 'false'); }
+  // Prevent body scroll
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSkillDetailModal() {
+  const overlay = $('skillDetailOverlay');
+  if (overlay) { overlay.style.display = 'none'; overlay.setAttribute('aria-hidden', 'true'); }
+  document.body.style.overflow = '';
+}
+
+function switchSkillDetailTab(tabName, btn) {
+  // Update tab buttons
+  const tabBar = btn.parentElement;
+  if (tabBar) {
+    tabBar.querySelectorAll('.skill-detail-tab-btn').forEach(b => b.classList.remove('active'));
+  }
+  btn.classList.add('active');
+  // Update tab panels
+  const main = $('skillDetailMain');
+  if (main) {
+    main.querySelectorAll('.skill-detail-tab-panel').forEach(p => p.classList.remove('active'));
+    const panel = main.querySelector('#skillTab' + tabName.charAt(0).toUpperCase() + tabName.slice(1));
+    if (panel) panel.classList.add('active');
+  }
 }
 
 function switchSkillView(view) {

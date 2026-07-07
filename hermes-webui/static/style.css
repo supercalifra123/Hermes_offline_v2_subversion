@@ -1900,6 +1900,66 @@ body.resizing{user-select:none;cursor:col-resize;}
 .skills-page-btn:disabled{opacity:.4;cursor:default;pointer-events:none;}
 .skills-page-info{font-size:11px;color:var(--muted);padding:0 8px;}
 
+/* ── Skill detail modal ── */
+.skill-detail-overlay{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(4px);}
+.skill-detail-modal{position:relative;width:100%;max-width:920px;max-height:calc(100vh - 48px);background:var(--bg);border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.25);display:flex;flex-direction:column;overflow:hidden;}
+.skill-detail-close{position:absolute;top:14px;right:14px;z-index:10;width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;transition:all .15s;font-size:16px;line-height:1;}
+.skill-detail-close:hover{background:var(--hover-bg);color:var(--text);border-color:var(--border2);}
+.skill-detail-body{display:flex;flex:1;min-height:0;overflow:hidden;}
+.skill-detail-main{flex:1;min-width:0;overflow-y:auto;padding:28px;}
+.skill-detail-sidebar{width:272px;flex-shrink:0;overflow-y:auto;padding:24px 20px;background:var(--surface);border-left:1px solid var(--border);}
+
+/* ── Skill detail header ── */
+.skill-detail-icon{width:40px;height:40px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--accent);background:var(--accent-bg);border-radius:10px;margin-bottom:12px;}
+.skill-detail-name{font-size:20px;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:8px;}
+.skill-detail-status-row{display:flex;align-items:center;gap:6px;margin-bottom:10px;}
+.skill-detail-status{display:inline-flex;align-items:center;padding:3px 10px;border-radius:12px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.03em;}
+.skill-detail-status.public{background:rgba(34,197,94,.1);color:#15803d;border:1px solid rgba(34,197,94,.2);}
+.skill-detail-status.active{background:rgba(59,130,246,.1);color:#1d4ed8;border:1px solid rgba(59,130,246,.2);}
+.skill-detail-desc{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px;}
+.skill-detail-meta-row{display:flex;align-items:center;gap:16px;font-size:11px;color:var(--muted);margin-bottom:6px;flex-wrap:wrap;}
+.skill-detail-meta-item{display:flex;align-items:center;gap:5px;}
+.skill-detail-meta-item svg{opacity:.6;}
+
+/* ── Skill detail tabs ── */
+.skill-detail-tabs{display:flex;align-items:center;gap:0;border-bottom:2px solid var(--border);margin:20px 0 0;}
+.skill-detail-tab-btn{padding:10px 18px;background:transparent;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;font-family:inherit;white-space:nowrap;}
+.skill-detail-tab-btn:hover{color:var(--text);}
+.skill-detail-tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.skill-detail-tab-panel{display:none;padding-top:18px;}
+.skill-detail-tab-panel.active{display:block;}
+
+/* ── Metadata table ── */
+.skill-meta-table{width:100%;border-collapse:collapse;margin-bottom:20px;}
+.skill-meta-table th,.skill-meta-table td{padding:8px 12px;border-bottom:1px solid var(--border-subtle);font-size:12px;text-align:left;}
+.skill-meta-table th{width:120px;color:var(--muted);font-weight:500;white-space:nowrap;}
+.skill-meta-table td{color:var(--text);word-break:break-all;}
+.skill-overview-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:10px;}
+.skill-overview-text{font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:12px;}
+.skill-overview-features{list-style:none;padding:0;margin:0;}
+.skill-overview-features li{position:relative;padding:6px 0 6px 22px;font-size:12px;color:var(--muted);line-height:1.5;}
+.skill-overview-features li::before{content:'';position:absolute;left:0;top:12px;width:6px;height:6px;border-radius:50%;background:var(--accent);opacity:.7;}
+
+/* ── Sidebar: install guide ── */
+.skill-sidebar-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+.skill-install-section{margin-bottom:20px;padding:16px;border:1px solid var(--border);border-radius:10px;background:var(--bg);}
+.skill-install-section h4{font-size:12px;font-weight:600;color:var(--text);margin:0 0 8px;display:flex;align-items:center;gap:6px;}
+.skill-install-notice{padding:14px 16px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);border-radius:8px;font-size:11px;color:#92400e;line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.skill-install-notice svg{flex-shrink:0;margin-top:1px;opacity:.7;}
+.skill-install-text{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:12px;}
+.skill-download-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit;text-decoration:none;}
+.skill-download-btn:hover{background:#1d4ed8;box-shadow:0 2px 8px rgba(37,99,235,.3);}
+.skill-download-btn svg{width:14px;height:14px;}
+
+/* ── Dark mode ── */
+:root.dark .skill-detail-overlay{background:rgba(0,0,0,.75);}
+:root.dark .skill-detail-modal{background:var(--sidebar);}
+:root.dark .skill-detail-sidebar{background:var(--bg);}
+:root.dark .skill-detail-status.public{background:rgba(34,197,94,.15);color:#4ade80;border-color:rgba(34,197,94,.3);}
+:root.dark .skill-detail-status.active{background:rgba(96,165,250,.15);color:#93c5fd;border-color:rgba(96,165,250,.3);}
+:root.dark .skill-install-notice{background:rgba(251,191,36,.1);color:#fcd34d;}
+:root.dark .skill-install-section{background:var(--surface);}
+
 .tool-card-row{margin:0;padding:1px 0;}
 .tool-call-group{margin:4px 0 4px var(--msg-rail);max-width:var(--msg-max);border-left:1px solid var(--border-subtle);}
 .tool-call-group-summary{width:100%;display:flex;align-items:center;gap:var(--space-2);padding:var(--space-1) var(--space-3);border:0;background:transparent;color:var(--muted);cursor:pointer;text-align:left;font:inherit;font-size:var(--font-size-xs);line-height:1.4;border-radius:var(--radius-card);}
