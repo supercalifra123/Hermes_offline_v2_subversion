@@ -2750,6 +2750,51 @@ def _serve_shell_unavailable(handler, exc: Exception) -> bool:
     return True
 
 
+_MARKET_API_BASE = "https://m1.apifoxmock.com/m1/8523244-8297808-default"
+
+
+def _proxy_market_api(handler, parsed, method: str, body: bytes | None = None) -> bool:
+    """Proxy /market-api/* requests to the mock API (server-side, no CORS).
+
+    Handles GET, POST, PATCH, DELETE by forwarding the method, path suffix,
+    query string, and request body to the upstream.
+    """
+    import urllib.request as _ur
+    import urllib.error as _ue
+
+    suffix = parsed.path[len("/market-api/"):]
+    query = parsed.query
+    target = f"{_MARKET_API_BASE}/{suffix}"
+    if query:
+        target += "?" + query
+
+    req_headers = {"Accept": "application/json"}
+    if body:
+        req_headers["Content-Type"] = "application/json"
+
+    req = _ur.Request(target, data=body, headers=req_headers, method=method)
+
+    try:
+        with _ur.urlopen(req, timeout=30) as resp:
+            resp_body = resp.read()
+            content_type = resp.headers.get("Content-Type", "application/json")
+            status = resp.status
+    except _ue.HTTPError as e:
+        # Preserve the upstream status code and body on errors
+        resp_body = e.read() if hasattr(e, "read") else str(e).encode()
+        content_type = "application/json"
+        status = e.code
+
+    handler.send_response(status)
+    handler.send_header("Content-Type", content_type)
+    handler.send_header("Content-Length", str(len(resp_body)))
+    handler.send_header("Cache-Control", "no-store")
+    _security_headers(handler)
+    handler.end_headers()
+    handler.wfile.write(resp_body)
+    return True
+
+
 def handle_get(handler, parsed) -> bool:
     """Handle all GET routes. Returns True if handled, False for 404."""
 
@@ -3698,6 +3743,9 @@ def handle_get(handler, parsed) -> bool:
         except Exception as e:
             logger.exception("rollback/diff failed")
             return bad(handler, str(e), status=500)
+
+    if parsed.path.startswith("/market-api/"):
+        return _proxy_market_api(handler, parsed, "GET")
 
     return False  # 404
 
@@ -4909,6 +4957,9 @@ def handle_post(handler, parsed) -> bool:
             logger.exception("rollback/restore failed")
             return bad(handler, str(e), status=500)
 
+    if parsed.path.startswith("/market-api/"):
+        return _proxy_market_api(handler, parsed, "POST", body)
+
     return False  # 404
 
 
@@ -4924,6 +4975,9 @@ def handle_patch(handler, parsed) -> bool:
         if result is False:
             return _kanban_unknown_endpoint(handler, parsed, "PATCH")
         return True
+    if parsed.path.startswith("/market-api/"):
+        return _proxy_market_api(handler, parsed, "PATCH", body)
+
     return False
 
 
@@ -4939,6 +4993,8 @@ def handle_delete(handler, parsed) -> bool:
         if result is False:
             return _kanban_unknown_endpoint(handler, parsed, "DELETE")
         return True
+    if parsed.path.startswith("/market-api/"):
+        return _proxy_market_api(handler, parsed, "DELETE", body)
     return False
 
 # ── GET route helpers ─────────────────────────────────────────────────────────

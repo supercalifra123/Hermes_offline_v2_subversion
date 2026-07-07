@@ -2415,6 +2415,10 @@ async function loadSkills() {
     const liveCats = new Set(_skillsData.map(s => s.category || '(general)'));
     for (const c of _collapsedCats) { if (!liveCats.has(c)) _collapsedCats.delete(c); }
     renderSkills(_skillsData);
+    fetch('/market-api/api')
+      .then(res => res.json())
+      .then(data => console.log('[market-api] response:', data))
+      .catch(err => console.warn('[market-api] fetch failed:', err));
   } catch(e) { box.innerHTML = `<div style="padding:12px;color:var(--accent);font-size:12px">Error: ${esc(e.message)}</div>`; }
 }
 
