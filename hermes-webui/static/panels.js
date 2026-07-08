@@ -2571,6 +2571,14 @@ async function loadMarketSkills(pageNum) {
   if (!grid) return;
   grid.innerHTML = `<div style="padding:24px;color:var(--muted);font-size:13px;text-align:center" data-i18n="loading">Loading...</div>`;
   try {
+    const loginRes = await fetch('/market-api/login-mock', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'username=admin&password=123456'
+    });
+    const loginData = await loginRes.json();
+    console.log('/market-api/login-mock 响应:', loginData);
+
     const res = await fetch('/market-api/skills-mock?pageNum=' + (pageNum || 1) + '&pageSize=' + _marketPageSize);
     const data = await res.json();
     _marketSkillsData = data;

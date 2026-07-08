@@ -2769,8 +2769,16 @@ def _proxy_market_api(handler, parsed, method: str, body: bytes | None = None) -
     if query:
         target += "?" + query
 
-    req_headers = {"Accept": "application/json"}
-    if body:
+    # Forward original request headers, with sensible defaults
+    req_headers = {}
+    for key, value in handler.headers.items():
+        # Skip hop-by-hop headers that urllib manages itself
+        if key.lower() in ("host", "content-length", "transfer-encoding", "connection", "accept-encoding"):
+            continue
+        req_headers[key] = value
+    if "Accept" not in req_headers:
+        req_headers["Accept"] = "application/json"
+    if body and "Content-Type" not in req_headers:
         req_headers["Content-Type"] = "application/json"
 
     req = _ur.Request(target, data=body, headers=req_headers, method=method)
