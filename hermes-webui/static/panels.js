@@ -2713,27 +2713,10 @@ function openMarketSkillDetail(name, skillId) {
         <button class="skill-detail-tab-btn" onclick="switchSkillDetailTab('versions', this)">版本</button>
       </div>
       <div class="skill-detail-tab-panel active" id="skillTabOverview">
-        <table class="skill-meta-table">
-          <tbody>
-            <tr><th>名称</th><td>${esc(displayName)}</td></tr>
-            <tr><th>描述</th><td>${esc(desc || '—')}</td></tr>
-            <tr><th>版本</th><td>${esc(version || '—')}</td></tr>
-            <tr><th>类别</th><td>${esc(catLabel)}</td></tr>
-            <tr><th>可见性</th><td>${esc(visibility || '—')}</td></tr>
-            <tr><th>状态</th><td>${esc(status || '—')}</td></tr>
-            <tr><th>需要API Key</th><td>${needApiKey ? '是' : '否'}</td></tr>
-            <tr><th>下载次数</th><td>${skill.downloadCount != null ? skill.downloadCount : '—'}</td></tr>
-            <tr><th>评分</th><td>${skill.ratingAvg != null ? skill.ratingAvg + ' (' + (skill.ratingCount||0) + ' 评价)' : '—'}</td></tr>
-          </tbody>
-        </table>
-        <div class="skill-overview-title">${esc(displayName)} 技能</div>
-        <div class="skill-overview-text">${esc(desc || '暂无描述。')}</div>
-        <ul class="skill-overview-features">
-          <li>调用 ${esc(displayName)} 相关 API 接口</li>
-          <li>下载并保存结果数据与图片</li>
-          <li>生成可视化图表与报告</li>
-          <li>批量处理与自动化工作流</li>
-        </ul>
+        <div id="skillMdContent" style="padding:16px;text-align:center;color:var(--muted);font-size:12px">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;margin-bottom:8px"><circle cx="12" cy="12" r="10" stroke-opacity=".25"/><path d="M12 2a10 10 0 0 1 10 10" stroke-opacity=".75"/></svg>
+          <div>加载中...</div>
+        </div>
       </div>
       <div class="skill-detail-tab-panel" id="skillTabFiles">
         <div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">
@@ -2771,6 +2754,8 @@ function openMarketSkillDetail(name, skillId) {
           <span>功能开发中，敬请期待</span>
         </div>
       </div>
+      <!-- 手动安装 section 暂时隐藏 -->
+      <!--
       <div class="skill-install-section">
         <h4>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -2781,7 +2766,8 @@ function openMarketSkillDetail(name, skillId) {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           下载 Skill
         </a>
-      </div>`;
+      </div>
+      -->`;
   }
 
   // Show the overlay
@@ -2789,6 +2775,32 @@ function openMarketSkillDetail(name, skillId) {
   if (overlay) { overlay.style.display = ''; overlay.setAttribute('aria-hidden', 'false'); }
   // Prevent body scroll
   document.body.style.overflow = 'hidden';
+
+  // Fetch skill markdown from /market-api/skill-md and render into overview tab
+  (async function() {
+    const mdContent = document.getElementById('skillMdContent');
+    if (!mdContent) return;
+    try {
+      const resp = await fetch('/market-api/skill-md?name=' + encodeURIComponent(name));
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const text = await resp.text();
+      let raw = '';
+      // Try parsing as JSON first; if that fails, treat the whole response as markdown
+      try {
+        const data = JSON.parse(text);
+        raw = data.content || data.markdown || data.body || '';
+      } catch (_) {
+        raw = text;
+      }
+      if (raw && raw.trim()) {
+        mdContent.innerHTML = '<div class="skill-md-rendered" style="text-align:left">' + renderMd(raw) + '</div>';
+      } else {
+        mdContent.innerHTML = '<div style="padding:20px;color:var(--muted);font-size:13px;text-align:center">暂无文档内容</div>';
+      }
+    } catch(e) {
+      mdContent.innerHTML = '<div style="padding:20px;color:var(--accent);font-size:13px;text-align:center">加载文档失败: ' + esc(e.message) + '</div>';
+    }
+  })();
 }
 
 function closeSkillDetailModal() {
