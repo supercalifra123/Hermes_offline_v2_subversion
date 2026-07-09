@@ -2423,6 +2423,8 @@ let _skillViewMode = 'installed'; // 'installed' | 'market'
 let _marketSkillsData = null;     // cached market API response
 let _marketPageNum = 1;
 let _marketPageSize = 16;
+let _marketSkillLabel = null;     // current market category filter; null = all
+let _marketCatInit = false;       // whether category button handlers have been bound
 let _installedPageNum = 1;
 let _installedPageSize = 16;
 
@@ -2532,6 +2534,7 @@ function renderSkillCard(skill, source) {
 function renderInstalledSkills(skills, page) {
   const grid = $('skillsCardGrid');
   const pagination = $('skillsPagination');
+  const empty = $('skillDetailEmpty');
   if (!grid) return;
 
   const query = ($('skillsSearchMain') && $('skillsSearchMain').value || '').toLowerCase();
@@ -2544,8 +2547,11 @@ function renderInstalledSkills(skills, page) {
   if (!filtered.length) {
     grid.innerHTML = `<div style="padding:24px;color:var(--muted);font-size:13px;text-align:center">${esc(t('skills_no_match'))}</div>`;
     if (pagination) pagination.innerHTML = '';
+    if (empty) empty.style.display = '';
     return;
   }
+
+  if (empty) empty.style.display = 'none';
 
   const pageSize = _installedPageSize;
   const totalPages = Math.ceil(filtered.length / pageSize);
@@ -2566,6 +2572,28 @@ function renderInstalledSkills(skills, page) {
 
 // ── Market skills ──
 
+function _initMarketCategoryHandlers() {
+  if (_marketCatInit) return;
+  _marketCatInit = true;
+  const container = $('skillsMarketCategories');
+  if (!container) return;
+  container.addEventListener('click', function(e) {
+    const btn = e.target.closest('.skills-cat-btn');
+    if (!btn) return;
+    const cat = btn.dataset.cat;
+    if (cat === undefined) return;
+
+    // Update active state
+    container.querySelectorAll('.skills-cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    // Set label filter and reload
+    _marketSkillLabel = cat === 'all' ? null : cat;
+    _marketPageNum = 1;
+    loadMarketSkills(1);
+  });
+}
+
 async function loadMarketSkills(pageNum) {
   const grid = $('skillsMarketGrid');
   if (!grid) return;
@@ -2579,7 +2607,11 @@ async function loadMarketSkills(pageNum) {
     const loginData = await loginRes.json();
     console.log('/market-api/login-mock 响应:', loginData);
 
-    const res = await fetch('/market-api/skills-mock?pageNum=' + (pageNum || 1) + '&pageSize=' + _marketPageSize);
+    let url = '/market-api/skills-mock?pageNum=' + (pageNum || 1) + '&pageSize=' + _marketPageSize;
+    if (_marketSkillLabel) {
+      url += '&skillLabel=' + encodeURIComponent(_marketSkillLabel);
+    }
+    const res = await fetch(url);
     const data = await res.json();
     _marketSkillsData = data;
     _marketPageNum = pageNum || 1;
@@ -2789,6 +2821,7 @@ function switchSkillView(view) {
       loadSkills();
     }
   } else if (view === 'market') {
+    _initMarketCategoryHandlers();
     if (cardsView) cardsView.style.display = 'none';
     if (marketView) marketView.style.display = '';
     if (!_marketSkillsData) {
