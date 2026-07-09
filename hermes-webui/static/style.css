@@ -1872,9 +1872,11 @@ body.resizing{user-select:none;cursor:col-resize;}
 .skills-cat-btn{padding:5px 12px;border:1px solid var(--border);border-radius:16px;background:transparent;color:var(--muted);font-size:11px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:inherit;}
 .skills-cat-btn:hover{background:var(--hover-bg);color:var(--text);border-color:var(--border2);}
 .skills-cat-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
-.skills-market-search{position:relative;width:200px;flex-shrink:0;}
-.skills-market-search input{width:100%;background:var(--input-bg);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:6px 10px 6px 30px;font-size:12px;outline:none;transition:border-color .15s,box-shadow .15s;box-sizing:border-box;}
+.skills-market-search{position:relative;width:280px;flex-shrink:0;display:flex;gap:6px;align-items:center;}
+.skills-market-search input{flex:1;min-width:0;background:var(--input-bg);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:6px 10px 6px 30px;font-size:12px;outline:none;transition:border-color .15s,box-shadow .15s;box-sizing:border-box;}
 .skills-market-search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg);}
+.skills-market-search-btn{padding:5px 12px;border:1px solid var(--accent);border-radius:8px;background:var(--accent);color:#fff;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:inherit;flex-shrink:0;}
+.skills-market-search-btn:hover{opacity:.85;}
 
 /* ── Skills card grid ── */
 .skills-card-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:16px;overflow-y:auto;flex:1;align-content:start;}

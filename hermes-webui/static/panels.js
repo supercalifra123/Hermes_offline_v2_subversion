@@ -2425,6 +2425,7 @@ let _marketPageNum = 1;
 let _marketPageSize = 16;
 let _marketSkillLabel = null;     // current market category filter; null = all
 let _marketCatInit = false;       // whether category button handlers have been bound
+let _marketSearchQuery = '';      // current market search query
 let _installedPageNum = 1;
 let _installedPageSize = 16;
 
@@ -2576,22 +2577,42 @@ function _initMarketCategoryHandlers() {
   if (_marketCatInit) return;
   _marketCatInit = true;
   const container = $('skillsMarketCategories');
-  if (!container) return;
-  container.addEventListener('click', function(e) {
-    const btn = e.target.closest('.skills-cat-btn');
-    if (!btn) return;
-    const cat = btn.dataset.cat;
-    if (cat === undefined) return;
+  if (container) {
+    container.addEventListener('click', function(e) {
+      const btn = e.target.closest('.skills-cat-btn');
+      if (!btn) return;
+      const cat = btn.dataset.cat;
+      if (cat === undefined) return;
 
-    // Update active state
-    container.querySelectorAll('.skills-cat-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+      // Update active state
+      container.querySelectorAll('.skills-cat-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
 
-    // Set label filter and reload
-    _marketSkillLabel = cat === 'all' ? null : cat;
-    _marketPageNum = 1;
-    loadMarketSkills(1);
-  });
+      // Set label filter and reload
+      _marketSkillLabel = cat === 'all' ? null : cat;
+      _marketPageNum = 1;
+      loadMarketSkills(1);
+    });
+  }
+
+  // Search button click handler
+  const searchBtn = $('btnMarketSearch');
+  const searchInput = $('skillsMarketSearch');
+  if (searchBtn && searchInput) {
+    searchBtn.addEventListener('click', function() {
+      _marketSearchQuery = searchInput.value.trim();
+      _marketPageNum = 1;
+      loadMarketSkills(1);
+    });
+    // Enter key handler
+    searchInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        _marketSearchQuery = searchInput.value.trim();
+        _marketPageNum = 1;
+        loadMarketSkills(1);
+      }
+    });
+  }
 }
 
 async function loadMarketSkills(pageNum) {
@@ -2610,6 +2631,9 @@ async function loadMarketSkills(pageNum) {
     let url = '/market-api/skills-mock?pageNum=' + (pageNum || 1) + '&pageSize=' + _marketPageSize;
     if (_marketSkillLabel) {
       url += '&skillLabel=' + encodeURIComponent(_marketSkillLabel);
+    }
+    if (_marketSearchQuery) {
+      url += '&displayName=' + encodeURIComponent(_marketSearchQuery);
     }
     const res = await fetch(url);
     const data = await res.json();
