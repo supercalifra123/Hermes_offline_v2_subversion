@@ -1,6 +1,6 @@
 ---
 name: evaluating-llms-harness
-description: "lm-eval-harness: benchmark LLMs (MMLU, GSM8K, etc.)."
+description: "lm-eval-harness：评估 LLM 基准测试（MMLU、GSM8K 等）。"
 version: 1.0.0
 author: Orchestra Research
 license: MIT
@@ -11,7 +11,6 @@ metadata:
     tags: [Evaluation, LM Evaluation Harness, Benchmarking, MMLU, HumanEval, GSM8K, EleutherAI, Model Quality, Academic Benchmarks, Industry Standard]
 
 ---
-
 # lm-evaluation-harness - LLM Benchmarking
 
 ## What's inside

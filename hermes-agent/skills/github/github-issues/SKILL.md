@@ -1,6 +1,6 @@
 ---
 name: github-issues
-description: "Create, triage, label, assign GitHub issues via gh or REST."
+description: "通过 gh 或 REST API 创建、分类、标记、分配 GitHub Issues。"
 version: 1.1.0
 author: Hermes Agent
 license: MIT
@@ -10,7 +10,6 @@ metadata:
     tags: [GitHub, Issues, Project-Management, Bug-Tracking, Triage]
     related_skills: [github-auth, github-pr-workflow]
 ---
-
 # GitHub Issues Management
 
 Create, search, triage, and manage GitHub issues. Each section shows `gh` first, then the `curl` fallback.

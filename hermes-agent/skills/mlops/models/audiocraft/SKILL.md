@@ -1,6 +1,6 @@
 ---
 name: audiocraft-audio-generation
-description: "AudioCraft: MusicGen text-to-music, AudioGen text-to-sound."
+description: "AudioCraft：MusicGen 文本转音乐、AudioGen 文本转音效。"
 version: 1.0.0
 author: Orchestra Research
 license: MIT
@@ -11,7 +11,6 @@ metadata:
     tags: [Multimodal, Audio Generation, Text-to-Music, Text-to-Audio, MusicGen]
 
 ---
-
 # AudioCraft: Audio Generation
 
 Comprehensive guide to using Meta's AudioCraft for text-to-music and text-to-audio generation with MusicGen, AudioGen, and EnCodec.

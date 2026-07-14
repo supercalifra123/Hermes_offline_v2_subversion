@@ -1,6 +1,6 @@
 ---
 name: yuanbao
-description: "Yuanbao (元宝) groups: @mention users, query info/members."
+description: "元宝群组：@提及用户、查询信息/成员。"
 version: 1.0.0
 platforms: [linux, macos, windows]
 metadata:
@@ -8,7 +8,6 @@ metadata:
     tags: [yuanbao, mention, at, group, members, 元宝, 派, 艾特]
     related_skills: []
 ---
-
 # Yuanbao Group Interaction
 
 ## CRITICAL: How Messaging Works

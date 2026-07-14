@@ -1,6 +1,6 @@
 ---
 name: segment-anything-model
-description: "SAM: zero-shot image segmentation via points, boxes, masks."
+description: "SAM：通过点、框、掩码进行零样本图像分割。"
 version: 1.0.0
 author: Orchestra Research
 license: MIT
@@ -11,7 +11,6 @@ metadata:
     tags: [Multimodal, Image Segmentation, Computer Vision, SAM, Zero-Shot]
 
 ---
-
 # Segment Anything Model (SAM)
 
 Comprehensive guide to using Meta AI's Segment Anything Model for zero-shot image segmentation.

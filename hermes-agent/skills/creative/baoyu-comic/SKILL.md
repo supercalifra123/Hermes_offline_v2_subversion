@@ -1,6 +1,6 @@
 ---
 name: baoyu-comic
-description: "Knowledge comics (知识漫画): educational, biography, tutorial."
+description: "知识漫画：教育、传记、教程类知识漫画创作。"
 version: 1.56.1
 author: 宝玉 (JimLiu)
 license: MIT
@@ -10,7 +10,6 @@ metadata:
     tags: [comic, knowledge-comic, creative, image-generation]
     homepage: https://github.com/JimLiu/baoyu-skills#baoyu-comic
 ---
-
 # Knowledge Comic Creator
 
 Adapted from [baoyu-comic](https://github.com/JimLiu/baoyu-skills) for Hermes Agent's tool ecosystem.

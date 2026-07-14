@@ -1,6 +1,6 @@
 ---
 name: linear
-description: "Linear: manage issues, projects, teams via GraphQL + curl."
+description: "Linear：通过 GraphQL + curl 管理 Issues、项目、团队。"
 version: 1.0.0
 author: Hermes Agent
 license: MIT
@@ -12,7 +12,6 @@ metadata:
   hermes:
     tags: [Linear, Project Management, Issues, GraphQL, API, Productivity]
 ---
-
 # Linear — Issue & Project Management
 
 Manage Linear issues, projects, and teams directly via the GraphQL API using `curl`. No MCP server, no OAuth flow, no extra dependencies.

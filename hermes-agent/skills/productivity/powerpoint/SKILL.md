@@ -1,10 +1,9 @@
 ---
 name: powerpoint
-description: "Create, read, edit .pptx decks, slides, notes, templates."
+description: "创建、读取、编辑 .pptx 演示文稿、幻灯片、备注、模板。"
 license: Proprietary. LICENSE.txt has complete terms
 platforms: [linux, macos, windows]
 ---
-
 # Powerpoint Skill
 
 ## When to use

@@ -1,10 +1,9 @@
 ---
 name: minecraft-modpack-server
-description: "Host modded Minecraft servers (CurseForge, Modrinth)."
+description: "托管模组化 Minecraft 服务器（CurseForge、Modrinth）。"
 tags: [minecraft, gaming, server, neoforge, forge, modpack]
 platforms: [linux, macos]
 ---
-
 # Minecraft Modpack Server Setup
 
 ## When to use

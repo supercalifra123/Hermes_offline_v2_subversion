@@ -1,6 +1,6 @@
 ---
 name: kanban-orchestrator
-description: Decomposition playbook + specialist-roster conventions + anti-temptation rules for an orchestrator profile routing work through Kanban. The "don't do the work yourself" rule and the basic lifecycle are auto-injected into every kanban worker's system prompt; this skill is the deeper playbook when you're specifically playing the orchestrator role.
+description: "分解策略手册 + 专家角色约定 + 反诱惑规则，用于通过看板路由工作的编排器配置文件。「不要自己干活的」规则和基本生命周期会自动注入到每个看板工作器的系统提示中；此技能是专门充当编排器角色时的深度策略手册。"
 version: 2.0.0
 platforms: [linux, macos, windows]
 metadata:
@@ -8,7 +8,6 @@ metadata:
     tags: [kanban, multi-agent, orchestration, routing]
     related_skills: [kanban-worker]
 ---
-
 # Kanban Orchestrator — Decomposition Playbook
 
 > The **core worker lifecycle** (including the `kanban_create` fan-out pattern and the "decompose, don't execute" rule) is auto-injected into every kanban process via the `KANBAN_GUIDANCE` system-prompt block. This skill is the deeper playbook when you're an orchestrator profile whose whole job is routing.

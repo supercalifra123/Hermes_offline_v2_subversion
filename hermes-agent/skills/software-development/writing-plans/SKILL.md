@@ -1,6 +1,6 @@
 ---
 name: writing-plans
-description: "Write implementation plans: bite-sized tasks, paths, code."
+description: "编写实施计划：细粒度任务、文件路径、代码片段。"
 version: 1.1.0
 author: Hermes Agent (adapted from obra/superpowers)
 license: MIT
@@ -10,7 +10,6 @@ metadata:
     tags: [planning, design, implementation, workflow, documentation]
     related_skills: [subagent-driven-development, test-driven-development, requesting-code-review]
 ---
-
 # Writing Implementation Plans
 
 ## Overview

@@ -1,7 +1,7 @@
 ---
 name: ideation
 title: Creative Ideation — Constraint-Driven Project Generation
-description: "Generate project ideas via creative constraints."
+description: "通过创意约束条件生成项目创意。"
 version: 1.0.0
 author: SHL0MS
 license: MIT
@@ -12,7 +12,6 @@ metadata:
     category: creative
     requires_toolsets: []
 ---
-
 # Creative Ideation
 
 ## When to use

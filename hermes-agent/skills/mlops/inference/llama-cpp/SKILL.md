@@ -1,6 +1,6 @@
 ---
 name: llama-cpp
-description: llama.cpp local GGUF inference + HF Hub model discovery.
+description: "llama.cpp 本地 GGUF 推理 + HuggingFace Hub 模型发现。"
 version: 2.1.2
 author: Orchestra Research
 license: MIT
@@ -10,7 +10,6 @@ metadata:
   hermes:
     tags: [llama.cpp, GGUF, Quantization, Hugging Face Hub, CPU Inference, Apple Silicon, Edge Deployment, AMD GPUs, Intel GPUs, NVIDIA, URL-first]
 ---
-
 # llama.cpp + GGUF
 
 Use this skill for local GGUF inference, quant selection, or Hugging Face repo discovery for llama.cpp.

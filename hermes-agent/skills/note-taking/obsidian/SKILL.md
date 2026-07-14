@@ -1,9 +1,8 @@
 ---
 name: obsidian
-description: Read, search, create, and edit notes in the Obsidian vault.
+description: "在 Obsidian 仓库中阅读、搜索、创建和编辑笔记。"
 platforms: [linux, macos, windows]
 ---
-
 # Obsidian Vault
 
 Use this skill for filesystem-first Obsidian vault work: reading notes, listing notes, searching note files, creating notes, appending content, and adding wikilinks.

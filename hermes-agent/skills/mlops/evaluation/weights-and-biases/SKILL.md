@@ -1,6 +1,6 @@
 ---
 name: weights-and-biases
-description: "W&B: log ML experiments, sweeps, model registry, dashboards."
+description: "W&B：记录 ML 实验、超参数搜索、模型注册、仪表板。"
 version: 1.0.0
 author: Orchestra Research
 license: MIT
@@ -11,7 +11,6 @@ metadata:
     tags: [MLOps, Weights And Biases, WandB, Experiment Tracking, Hyperparameter Tuning, Model Registry, Collaboration, Real-Time Visualization, PyTorch, TensorFlow, HuggingFace]
 
 ---
-
 # Weights & Biases: ML Experiment Tracking & MLOps
 
 ## When to Use This Skill

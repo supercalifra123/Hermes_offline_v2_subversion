@@ -1,6 +1,6 @@
 ---
 name: ocr-and-documents
-description: "Extract text from PDFs/scans (pymupdf, marker-pdf)."
+description: "从 PDF/扫描件中提取文本（pymupdf、marker-pdf）。"
 version: 2.3.0
 author: Hermes Agent
 license: MIT
@@ -10,7 +10,6 @@ metadata:
     tags: [PDF, Documents, Research, Arxiv, Text-Extraction, OCR]
     related_skills: [powerpoint]
 ---
-
 # PDF & Document Extraction
 
 For DOCX: use `python-docx` (parses actual document structure, far better than OCR).

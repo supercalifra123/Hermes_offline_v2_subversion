@@ -1,6 +1,6 @@
 ---
 name: notion
-description: "Notion API via curl: pages, databases, blocks, search."
+description: "通过 curl 调用 Notion API：页面、数据库、块、搜索。"
 version: 1.0.0
 author: community
 license: MIT
@@ -12,7 +12,6 @@ metadata:
 prerequisites:
   env_vars: [NOTION_API_KEY]
 ---
-
 # Notion API
 
 Use the Notion API via curl to create, read, update pages, databases (data sources), and blocks. No extra tools needed — just curl and a Notion API key.

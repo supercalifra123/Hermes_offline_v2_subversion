@@ -1,6 +1,6 @@
 ---
 name: excalidraw
-description: "Hand-drawn Excalidraw JSON diagrams (arch, flow, seq)."
+description: "手绘风格的 Excalidraw JSON 图表（架构图、流程图、时序图）。"
 version: 1.0.0
 author: Hermes Agent
 license: MIT
@@ -12,7 +12,6 @@ metadata:
     related_skills: []
 
 ---
-
 # Excalidraw Diagram Skill
 
 Create diagrams by writing standard Excalidraw element JSON and saving as `.excalidraw` files. These files can be drag-and-dropped onto [excalidraw.com](https://excalidraw.com) for viewing and editing. No accounts, no API keys, no rendering libraries -- just JSON.

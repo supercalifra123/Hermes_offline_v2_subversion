@@ -1,6 +1,6 @@
 ---
 name: ascii-art
-description: "ASCII art: pyfiglet, cowsay, boxes, image-to-ascii."
+description: "ASCII 艺术：pyfiglet、cowsay、boxes、图片转 ASCII。"
 version: 4.0.0
 author: 0xbyt4, Hermes Agent
 license: MIT
@@ -12,7 +12,6 @@ metadata:
     related_skills: [excalidraw]
 
 ---
-
 # ASCII Art Skill
 
 Multiple tools for different ASCII art needs. All tools are local CLI programs or free REST APIs — no API keys required.

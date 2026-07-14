@@ -1,6 +1,6 @@
 ---
 name: design-md
-description: Author/validate/export Google's DESIGN.md token spec files.
+description: "创作/验证/导出 Google DESIGN.md 设计令牌规范文件。"
 version: 1.0.0
 author: Hermes Agent
 license: MIT
@@ -10,7 +10,6 @@ metadata:
     tags: [design, design-system, tokens, ui, accessibility, wcag, tailwind, dtcg, google]
     related_skills: [popular-web-designs, claude-design, excalidraw, architecture-diagram]
 ---
-
 # DESIGN.md Skill
 
 DESIGN.md is Google's open spec (Apache-2.0, `google-labs-code/design.md`) for

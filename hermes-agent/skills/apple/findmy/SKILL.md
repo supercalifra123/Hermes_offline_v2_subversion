@@ -1,6 +1,6 @@
 ---
 name: findmy
-description: "Track Apple devices/AirTags via FindMy.app on macOS."
+description: "通过 macOS 上的 FindMy.app 追踪 Apple 设备/AirTag。"
 version: 1.0.0
 author: Hermes Agent
 license: MIT
@@ -9,7 +9,6 @@ metadata:
   hermes:
     tags: [FindMy, AirTag, location, tracking, macOS, Apple]
 ---
-
 # Find My (Apple)
 
 Track Apple devices and AirTags via the FindMy.app on macOS. Since Apple doesn't

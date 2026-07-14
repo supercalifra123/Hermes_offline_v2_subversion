@@ -1,6 +1,6 @@
 ---
 name: jupyter-live-kernel
-description: "Iterative Python via live Jupyter kernel (hamelnb)."
+description: "通过实时 Jupyter 内核进行交互式 Python 编程（hamelnb）。"
 version: 1.0.0
 author: Hermes Agent
 license: MIT
@@ -10,7 +10,6 @@ metadata:
     tags: [jupyter, notebook, repl, data-science, exploration, iterative]
     category: data-science
 ---
-
 # Jupyter Live Kernel (hamelnb)
 
 Gives you a **stateful Python REPL** via a live Jupyter kernel. Variables persist

@@ -1,6 +1,6 @@
 ---
 name: comfyui
-description: "Generate images, video, and audio with ComfyUI — install, launch, manage nodes/models, run workflows with parameter injection. Uses the official comfy-cli for lifecycle and direct REST/WebSocket API for execution."
+description: "使用 ComfyUI 生成图像、视频和音频——安装、启动、管理节点/模型、通过参数注入运行工作流。使用官方 comfy-cli 管理生命周期，通过 REST/WebSocket API 直接执行。"
 version: 5.0.0
 author: [kshitijk4poor, alt-glitch]
 license: MIT
@@ -26,7 +26,6 @@ metadata:
     related_skills: [stable-diffusion-image-generation, image_gen]
     category: creative
 ---
-
 # ComfyUI
 
 Generate images, video, audio, and 3D content through ComfyUI using the

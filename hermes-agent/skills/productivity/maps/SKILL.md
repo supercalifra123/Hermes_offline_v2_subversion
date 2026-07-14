@@ -1,6 +1,6 @@
 ---
 name: maps
-description: "Geocode, POIs, routes, timezones via OpenStreetMap/OSRM."
+description: "通过 OpenStreetMap/OSRM 进行地理编码、POI 查询、路线规划、时区查询。"
 version: 1.2.0
 author: Mibayy
 license: MIT
@@ -12,7 +12,6 @@ metadata:
     requires_toolsets: [terminal]
     supersedes: [find-nearby]
 ---
-
 # Maps Skill
 
 Location intelligence using free, open data sources. 8 commands, 44 POI

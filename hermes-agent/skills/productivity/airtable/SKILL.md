@@ -1,6 +1,6 @@
 ---
 name: airtable
-description: Airtable REST API via curl. Records CRUD, filters, upserts.
+description: "通过 curl 调用 Airtable REST API：记录的增删改查、过滤、更新插入。"
 version: 1.1.0
 author: community
 license: MIT
@@ -13,7 +13,6 @@ metadata:
     tags: [Airtable, Productivity, Database, API]
     homepage: https://airtable.com/developers/web/api/introduction
 ---
-
 # Airtable — Bases, Tables & Records
 
 Work with Airtable's REST API directly via `curl` using the `terminal` tool. No MCP server, no OAuth flow, no Python SDK — just `curl` and a personal access token.

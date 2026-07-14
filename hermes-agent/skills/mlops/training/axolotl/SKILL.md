@@ -1,6 +1,6 @@
 ---
 name: axolotl
-description: "Axolotl: YAML LLM fine-tuning (LoRA, DPO, GRPO)."
+description: "Axolotl：基于 YAML 配置的 LLM 微调（LoRA、DPO、GRPO）。"
 version: 1.0.0
 author: Orchestra Research
 license: MIT
@@ -11,7 +11,6 @@ metadata:
     tags: [Fine-Tuning, Axolotl, LLM, LoRA, QLoRA, DPO, KTO, ORPO, GRPO, YAML, HuggingFace, DeepSpeed, Multimodal]
 
 ---
-
 # Axolotl Skill
 
 ## What's inside

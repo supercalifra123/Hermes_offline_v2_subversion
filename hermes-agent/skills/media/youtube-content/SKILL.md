@@ -1,9 +1,8 @@
 ---
 name: youtube-content
-description: "YouTube transcripts to summaries, threads, blogs."
+description: "将 YouTube 字幕转换为摘要、推文线程、博客文章。"
 platforms: [linux, macos, windows]
 ---
-
 # YouTube Content Tool
 
 ## When to use

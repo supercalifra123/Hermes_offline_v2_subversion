@@ -1,6 +1,6 @@
 ---
 name: github-pr-workflow
-description: "GitHub PR lifecycle: branch, commit, open, CI, merge."
+description: "GitHub PR 全生命周期：创建分支、提交、发起 PR、CI 检查、合并。"
 version: 1.1.0
 author: Hermes Agent
 license: MIT
@@ -10,7 +10,6 @@ metadata:
     tags: [GitHub, Pull-Requests, CI/CD, Git, Automation, Merge]
     related_skills: [github-auth, github-code-review]
 ---
-
 # GitHub Pull Request Workflow
 
 Complete guide for managing the PR lifecycle. Each section shows the `gh` way first, then the `git` + `curl` fallback for machines without `gh`.

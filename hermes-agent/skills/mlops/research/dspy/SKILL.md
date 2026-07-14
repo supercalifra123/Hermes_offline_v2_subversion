@@ -1,6 +1,6 @@
 ---
 name: dspy
-description: "DSPy: declarative LM programs, auto-optimize prompts, RAG."
+description: "DSPy：声明式语言模型编程，自动优化提示词和 RAG 流程。"
 version: 1.0.0
 author: Orchestra Research
 license: MIT
@@ -11,7 +11,6 @@ metadata:
     tags: [Prompt Engineering, DSPy, Declarative Programming, RAG, Agents, Prompt Optimization, LM Programming, Stanford NLP, Automatic Optimization, Modular AI]
 
 ---
-
 # DSPy: Declarative Language Model Programming
 
 ## When to Use This Skill

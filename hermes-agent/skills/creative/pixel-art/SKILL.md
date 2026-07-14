@@ -1,6 +1,6 @@
 ---
 name: pixel-art
-description: "Pixel art w/ era palettes (NES, Game Boy, PICO-8)."
+description: "像素艺术：使用各时代调色板（NES、Game Boy、PICO-8）。"
 version: 2.0.0
 author: dodo-reach
 license: MIT
@@ -12,7 +12,6 @@ metadata:
     credits:
       - "Hardware palettes and animation loops ported from Synero/pixel-art-studio (MIT) — https://github.com/Synero/pixel-art-studio"
 ---
-
 # Pixel Art
 
 Convert any image into retro pixel art, then optionally animate it into a short

@@ -1,6 +1,6 @@
 ---
 name: apple-notes
-description: "Manage Apple Notes via memo CLI: create, search, edit."
+description: "通过 memo CLI 管理 Apple 备忘录：创建、搜索、编辑。"
 version: 1.0.0
 author: Hermes Agent
 license: MIT
@@ -12,7 +12,6 @@ metadata:
 prerequisites:
   commands: [memo]
 ---
-
 # Apple Notes
 
 Use `memo` to manage Apple Notes directly from the terminal. Notes sync across all Apple devices via iCloud.

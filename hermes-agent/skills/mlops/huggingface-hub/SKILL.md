@@ -1,13 +1,12 @@
 ---
 name: huggingface-hub
-description: "HuggingFace hf CLI: search/download/upload models, datasets."
+description: "HuggingFace hf CLI：搜索/下载/上传模型和数据集。"
 version: 1.0.0
 author: Hugging Face
 license: MIT
 tags: [huggingface, hf, models, datasets, hub, mlops]
 platforms: [linux, macos, windows]
 ---
-
 # Hugging Face CLI (`hf`) Reference Guide
 
 The `hf` command is the modern command-line interface for interacting with the Hugging Face Hub, providing tools to manage repositories, models, datasets, and Spaces.

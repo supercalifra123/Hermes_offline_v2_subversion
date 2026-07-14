@@ -1,6 +1,6 @@
 ---
 name: fine-tuning-with-trl
-description: "TRL: SFT, DPO, PPO, GRPO, reward modeling for LLM RLHF."
+description: "TRL：SFT、DPO、PPO、GRPO、奖励建模等 LLM RLHF 训练方法。"
 version: 1.0.0
 author: Orchestra Research
 license: MIT
@@ -11,7 +11,6 @@ metadata:
     tags: [Post-Training, TRL, Reinforcement Learning, Fine-Tuning, SFT, DPO, PPO, GRPO, RLHF, Preference Alignment, HuggingFace]
 
 ---
-
 # TRL - Transformer Reinforcement Learning
 
 ## Quick start

@@ -1,6 +1,6 @@
 ---
 name: plan
-description: "Plan mode: write markdown plan to .hermes/plans/, no exec."
+description: "计划模式：将 Markdown 计划写入 .hermes/plans/ 目录，不执行任何操作。"
 version: 1.0.0
 author: Hermes Agent
 license: MIT
@@ -10,7 +10,6 @@ metadata:
     tags: [planning, plan-mode, implementation, workflow]
     related_skills: [writing-plans, subagent-driven-development]
 ---
-
 # Plan Mode
 
 Use this skill when the user wants a plan instead of execution.

@@ -151,6 +151,40 @@ has_code_changes() {
 }
 
 fix_permissions
+
+# ── Force re-sync bundled skills from source image ─────────────────────────
+# Removes old bundled skill directories and manifest so sync_skills() copies
+# fresh from /opt/hermes-offline/hermes-agent/skills/ (the Docker image).
+# Hub-installed skills (tracked by .hub_lock) and user-created local skills
+# are NOT affected — only directories that match the bundled source tree.
+SKILLS_DIR="${HERMES_HOME}/skills"
+BUNDLED_SKILLS_SRC="/opt/hermes-offline/hermes-agent/skills"
+MANIFEST_FILE="${SKILLS_DIR}/.bundled_manifest"
+
+if [ -d "$BUNDLED_SKILLS_SRC" ]; then
+  # Remove old runtime copies of bundled skills so sync_skills re-copies them
+  for skill_md in $(find "$BUNDLED_SKILLS_SRC" -name "SKILL.md" -type f 2>/dev/null); do
+    skill_src_dir=$(dirname "$skill_md")
+    rel_path="${skill_src_dir#$BUNDLED_SKILLS_SRC/}"
+    runtime_path="$SKILLS_DIR/$rel_path"
+    if [ -d "$runtime_path" ]; then
+      log "Cleaning old bundled skill: $rel_path"
+      rm -rf "$runtime_path"
+    fi
+  done
+  # Also clean orphan bundled category dirs (empty after removing skills)
+  if [ -d "$SKILLS_DIR" ]; then
+    find "$SKILLS_DIR" -type d -empty -delete 2>/dev/null || true
+  fi
+fi
+
+# Remove the manifest to force fresh hash tracking
+if [ -f "$MANIFEST_FILE" ]; then
+  rm -f "$MANIFEST_FILE"
+  log "Cleared bundled skill manifest — fresh sync from image on startup"
+fi
+# ───────────────────────────────────────────────────────────────────────────
+
 cd /opt/hermes-offline
 
 log "Hermes home: ${HERMES_HOME}"

@@ -1,6 +1,6 @@
 ---
 name: spotify
-description: "Spotify: play, search, queue, manage playlists and devices."
+description: "Spotify：播放、搜索、队列管理、播放列表和设备管理。"
 version: 1.0.0
 author: Hermes Agent
 license: MIT
@@ -12,7 +12,6 @@ metadata:
     tags: [spotify, music, playback, playlists, media]
     related_skills: [gif-search]
 ---
-
 # Spotify
 
 Control the user's Spotify account via the Hermes Spotify toolset (7 tools). Setup guide: https://hermes-agent.nousresearch.com/docs/user-guide/features/spotify

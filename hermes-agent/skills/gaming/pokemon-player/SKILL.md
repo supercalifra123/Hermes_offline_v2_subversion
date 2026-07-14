@@ -1,6 +1,6 @@
 ---
 name: pokemon-player
-description: "Play Pokemon via headless emulator + RAM reads."
+description: "通过无头模拟器 + RAM 读取来游玩宝可梦。"
 tags: [gaming, pokemon, emulator, pyboy, gameplay, gameboy]
 platforms: [linux, macos, windows]
 ---

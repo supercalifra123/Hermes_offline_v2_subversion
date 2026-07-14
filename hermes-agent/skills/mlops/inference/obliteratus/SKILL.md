@@ -1,6 +1,6 @@
 ---
 name: obliteratus
-description: "OBLITERATUS: abliterate LLM refusals (diff-in-means)."
+description: "OBLITERATUS：消除 LLM 拒绝回答的倾向（均值差法）。"
 version: 2.0.0
 author: Hermes Agent
 license: MIT
@@ -11,7 +11,6 @@ metadata:
     tags: [Abliteration, Uncensoring, Refusal-Removal, LLM, Weight-Projection, SVD, Mechanistic-Interpretability, HuggingFace, Model-Surgery]
     related_skills: [vllm, gguf, huggingface-tokenizers]
 ---
-
 # OBLITERATUS Skill
 
 ## What's inside

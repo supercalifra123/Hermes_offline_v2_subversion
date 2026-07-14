@@ -1,6 +1,6 @@
 ---
 name: songsee
-description: "Audio spectrograms/features (mel, chroma, MFCC) via CLI."
+description: "通过 CLI 生成音频频谱图/特征（梅尔频谱、色度、MFCC）。"
 version: 1.0.0
 author: community
 license: MIT
@@ -12,7 +12,6 @@ metadata:
 prerequisites:
   commands: [songsee]
 ---
-
 # songsee
 
 Generate spectrograms and multi-panel audio feature visualizations from audio files.

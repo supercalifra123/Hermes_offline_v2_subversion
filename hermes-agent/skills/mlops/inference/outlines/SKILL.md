@@ -1,6 +1,6 @@
 ---
 name: outlines
-description: "Outlines: structured JSON/regex/Pydantic LLM generation."
+description: "Outlines：结构化 JSON/正则表达式/Pydantic 约束的 LLM 生成。"
 version: 1.0.0
 author: Orchestra Research
 license: MIT
@@ -11,7 +11,6 @@ metadata:
     tags: [Prompt Engineering, Outlines, Structured Generation, JSON Schema, Pydantic, Local Models, Grammar-Based Generation, vLLM, Transformers, Type Safety]
 
 ---
-
 # Outlines: Structured Text Generation
 
 ## When to Use This Skill

@@ -1,6 +1,6 @@
 ---
 name: opencode
-description: "Delegate coding to OpenCode CLI (features, PR review)."
+description: "将编码任务委托给 OpenCode CLI（功能开发、PR 审查）。"
 version: 1.2.0
 author: Hermes Agent
 license: MIT
@@ -10,7 +10,6 @@ metadata:
     tags: [Coding-Agent, OpenCode, Autonomous, Refactoring, Code-Review]
     related_skills: [claude-code, codex, hermes-agent]
 ---
-
 # OpenCode CLI
 
 Use [OpenCode](https://opencode.ai) as an autonomous coding worker orchestrated by Hermes terminal/process tools. OpenCode is a provider-agnostic, open-source AI coding agent with a TUI and CLI.
