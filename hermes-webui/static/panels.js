@@ -2752,7 +2752,7 @@ function openMarketSkillDetail(name, skillId) {
         <p style="font-size:12px;color:var(--text);margin:0 0 8px">将下方命令复制到Agent中执行</p>
         <div class="skill-code-block" style="position:relative;background:var(--code-bg, #1e1e2e);border-radius:6px;padding:12px 36px 12px 12px;font-size:12px;line-height:1.5;color:var(--code-fg, #cdd6f4);margin:0">
           <pre style="margin:0;white-space:pre-wrap;word-break:break-all"><code>请根据https://www.baidu.com/doc.md 安装 clawhub 命令，然后安装${esc(skill.slug || name)}技能</code></pre>
-          <button style="position:absolute;top:6px;right:6px;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--muted);cursor:pointer;padding:2px 6px;font-size:11px" onclick="event.stopPropagation();var t=this.previousElementSibling.textContent;navigator.clipboard.writeText(t).then(function(){showToast('已复制')}).catch(function(){showToast('复制失败','error')})" title="复制">
+          <button style="position:absolute;top:6px;right:6px;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--muted);cursor:pointer;padding:2px 6px;font-size:11px" onclick="event.stopPropagation();var t=this.previousElementSibling.textContent;_copyText(t).then(function(){showToast('已复制')}).catch(function(){showToast('复制失败','error')})" title="复制">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
           </button>
         </div>
